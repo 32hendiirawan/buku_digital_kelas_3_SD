@@ -289,7 +289,7 @@
             let pdfDoc = null;
             const renderedPages = new Map(); 
 
-            btnLibrary.onclick = () => { if(!isZoomed) window.location.href = 'library.html'; };
+            btnLibrary.onclick = () => { if(!isZoomed) window.location.href = 'index.html'; };
 
             loadAndInitializeContainer(targetPdf);
 
@@ -343,7 +343,7 @@
 
                 } catch (error) {
                     alert("Gagal memuat dokumen: " + error.message);
-                    window.location.href = 'library.html';
+                    window.location.href = 'index.html';
                 }
             }
 
