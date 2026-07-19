@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Digital SD Kelas 3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-color: #0f172a;         
+            --shelf-color: #5c4033;
+        }
+
+        body {
+            background-image: url('cover/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1200px; 
+        }
+
+        .library-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.5);
+            z-index: 50;
+        }
+
+        /* ==================================================== */
+        /* DEFAULT LAYOUT: LANDSCAPE (3 Kolom x 2 Baris)         */
+        /* ==================================================== */
+        .room-viewport {
+            position: relative;
+            width: 90vw;
+            max-width: 900px;
+            height: 550px;
+            transform-style: preserve-3d; 
+        }
+
+        .shelf-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-origin: center center -450px; /* Poros Landscape */
+        }
+
+        .shelf-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 40px 20px;
+            padding: 20px 10px 40px 10px;
+            box-sizing: border-box;
+            background-image: none; 
+            border-radius: 8px;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-origin: center center -450px;
+        }
+
+        /* Dimensi Buku Default */
+        .book-cover-wrapper {
+            width: 140px;
+            height: 200px;
+            background-color: #34495e;
+            border-radius: 4px 8px 8px 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            text-decoration: none;
+            color: inherit;
+            perspective: 1000px;
+        }
+
+        .book-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .book-link:hover .book-cover-wrapper {
+            transform: rotateY(-20deg) translateZ(15px);
+            box-shadow: 15px 15px 25px rgba(0,0,0,0.8);
+        }
+
+        .book-cover-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 10px; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0) 100%);
+            z-index: 10;
+        }
+
+        .book-title {
+            margin-top: 12px;
+            font-size: 1rem;
+            text-align: center;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: black;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Navigasi */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(15, 23, 42, 0.85);
+            border: 1px solid #475569;
+            color: #f8fafc;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .slider-btn:hover:not(:disabled) { 
+            background-color: #3b82f6; 
+            transform: translateY(-50%) scale(1.1);
+        }
+        .slider-btn:disabled { opacity: 0.2; cursor: default; }
+        #slide-left { left: 20px; }
+        #slide-right { right: 20px; }
+
+        /* ==================================================== */
+        /* RESPONSIVE LAYOUT: PORTRAIT MODES (Layar Tegak)       */
+        /* ==================================================== */
+        @media (max-width: 768px) or (orientation: portrait) {
+            .library-title { font-size: 1.6rem; margin-bottom: 20px; }
+
+            .room-viewport {
+                width: 85vw;
+                max-width: 450px;
+                height: 68vh;
+                max-height: 650px;
+            }
+
+            /* Mengubah Poros Kedalaman Kamar 3D Menjadi Lebih Dekat (-250px) */
+            .shelf-track, .shelf-page {
+                transform-origin: center center -250px;
+            }
+
+            /* Berubah Menjadi 2 Kolom x 3 Baris */
+            .shelf-page {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 30px 15px;
+                padding: 15px 10px 25px 10px;
+            }
+
+            /* Penyesuaian Ukuran Buku agar Pas di HP */
+            .book-cover-wrapper { width: 110px; height: 160px; }
+            .book-title { max-width: 110px; font-size: 0.8rem; margin-top: 8px; }
+
+            .slider-btn { width: 45px; height: 45px; font-size: 1.1rem; }
+            #slide-left { left: 8px; }
+            #slide-right { right: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="library-title">Buku Digital SD Kelas 3</h1>
+    
+    <button class="slider-btn" id="slide-left" disabled><i class="fa-solid fa-arrow-left"></i></button>
+    <button class="slider-btn" id="slide-right" disabled><i class="fa-solid fa-arrow-right"></i></button>
+
+    <div class="room-viewport">
+        <div class="shelf-track" id="shelf-track"></div>
+    </div>
+
+    <script>
+        const BOOK_LIST = [
+            { title: "Pend. Pancasila", url: "pdf/pkn.pdf", cover: "cover/pkn.png" },
+            { title: "Bahasa Inggris", url: "pdf/bahasa_inggris.pdf", cover: "cover/bahasa_inggris.png" },
+            { title: "IPAS", url: "pdf/ipas.pdf", cover: "cover/ipas.png" },
+            { title: "Pend. Agama Islam", url: "pdf/pai_bp.pdf", cover: "cover/pai_bp.png" },
+            { title: "Matematika", url: "pdf/matematika.pdf", cover: "cover/matematika.png" },
+            { title: "Bahasa Indonesia", url: "pdf/bahasa_indonesia.pdf", cover: "cover/bahasa_indonesia.png" }
+        ];
+
+        let currentLibrarySlide = 0;
+        let totalLibrarySlides = 0;
+        const anglePerSlide = 90; 
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initLibraryShelf();
+            setupLibraryNavigation();
+            
+            // Re-inisialisasi otomatis saat pengguna memutar device layar/resize window
+            window.addEventListener('resize', debounce(() => {
+                initLibraryShelf();
+            }, 300));
+        });
+
+        function initLibraryShelf() {
+            const track = document.getElementById('shelf-track');
+            track.innerHTML = ""; // Bersihkan isi lama sebelum render ulang
+            
+            // CEK MODE: Jika lebar kurang dari 768px atau tinggi lebih besar dari lebar, pakai 6 item per rak.
+            const isPortrait = window.innerWidth <= 768 || window.innerHeight > window.innerWidth;
+            const itemsPerPage = isPortrait ? 6 : 6; // Tetap 6 item, beda susunan baris/kolom di CSS
+
+            totalLibrarySlides = Math.ceil(BOOK_LIST.length / itemsPerPage);
+            
+            // Jaga batasan slide agar tidak keluar jalur setelah resize
+            if(currentLibrarySlide >= totalLibrarySlides) currentLibrarySlide = totalLibrarySlides - 1;
+            if(currentLibrarySlide < 0) currentLibrarySlide = 0;
+
+            for (let s = 0; s < totalLibrarySlides; s++) {
+                const shelfPage = document.createElement('div');
+                shelfPage.className = 'shelf-page';
+                shelfPage.style.transform = `rotateY(${s * anglePerSlide}deg)`;
+
+                const startIdx = s * itemsPerPage;
+                const endIdx = Math.min(startIdx + itemsPerPage, BOOK_LIST.length);
+
+                for (let i = startIdx; i < endIdx; i++) {
+                    const book = BOOK_LIST[i];
+                    
+                    const bookLink = document.createElement('a');
+                    bookLink.className = 'book-link';
+                    bookLink.href = `buku.html?file=${encodeURIComponent(book.url)}`;
+
+                    const coverWrapper = document.createElement('div');
+                    coverWrapper.className = 'book-cover-wrapper';
+
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'book-cover-img';
+                    imgEl.src = book.cover;
+                    imgEl.alt = book.title;
+                    imgEl.onerror = function() {
+                        this.style.display = 'none';
+                        coverWrapper.innerHTML = '<i class="fa-solid fa-book" style="font-size:2rem;color:#64748b;"></i>';
+                    };
+
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'book-title';
+                    titleEl.innerText = book.title;
+
+                    coverWrapper.appendChild(imgEl);
+                    bookLink.appendChild(coverWrapper);
+                    bookLink.appendChild(titleEl);
+                    shelfPage.appendChild(bookLink);
+                }
+                track.appendChild(shelfPage);
+            }
+            track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+            updateSliderButtons();
+        }
+
+        function setupLibraryNavigation() {
+            const track = document.getElementById('shelf-track');
+            const btnLeft = document.getElementById('slide-left');
+            const btnRight = document.getElementById('slide-right');
+
+            btnRight.onclick = () => {
+                if (currentLibrarySlide < totalLibrarySlides - 1) {
+                    currentLibrarySlide++;
+                    track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+                    updateSliderButtons();
+                }
+            };
+
+            btnLeft.onclick = () => {
+                if (currentLibrarySlide > 0) {
+                    currentLibrarySlide--;
+                    track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+                    updateSliderButtons();
+                }
+            };
+        }
+
+        function updateSliderButtons() {
+            document.getElementById('slide-left').disabled = (currentLibrarySlide === 0);
+            document.getElementById('slide-right').disabled = (currentLibrarySlide >= totalLibrarySlides - 1);
+        }
+
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+                // GLOBAL BULLETPROOF SECURITY LAYER
+        (function() {
+            window.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); }, true);
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); }
+                if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); e.stopPropagation(); }
+                if (e.ctrlKey && ['U', 'S', 'A', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); e.stopPropagation(); }
+            }, true);
+        })();
+    </script>
+</body>
+</html>
