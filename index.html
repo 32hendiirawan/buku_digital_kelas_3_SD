@@ -36,7 +36,7 @@
 
         .button-chat {
             position: absolute;
-            top: 2vh;
+            bottom: 2vh;
             right: 2vh;
             z-index: 100;
         }
@@ -320,59 +320,12 @@
         <div class="shelf-track" id="shelf-track"></div>
         <div id="empty-state" class="empty-state" style="display: none;">
             <i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:8px;"></i><br>
-            Buku tidak ditemukan.
+            Saat ini baru tersedia untuk Jenjang SD, untuk jenjang lainnya, silakan chat lewat button di kanan-bawah.
         </div>
     </div>
 
+    <script src="list_buku.js"></script>
     <script>
-        const BOOK_DATABASE = [
-            { title: "Bahasa Indonesia 1", jenjang: "SD", kelas : "1", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Bahasa_Indonesia_BS_KLS_I_Rev.pdf", cover : "cover/bindo1.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Indonesia 2", jenjang: "SD", kelas : "2", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Indonesia_BS_KLS_II_Rev.pdf", cover : "cover/bindo2.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Indonesia 3", jenjang: "SD", kelas : "3", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Indonesia_BS_KLS_III_Revv.pdf", cover : "cover/bindo3.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Indonesia 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Bahasa_Indonesia_BS_KLS_IV_Rev.pdf", cover : "cover/bindo4.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Indonesia 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Indonesia_BS_KLS_V_Rev.pdf", cover : "cover/bindo5.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Indonesia 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Indonesia_BS_KLS_VI_Rev.pdf", cover : "cover/bindo6.png", mapel: "Bahasa Indonesia" },
-            { title: "Bahasa Inggris 3", jenjang: "SD", kelas : "3", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Inggris_FN_BS_KLS_III.pdf", cover : "cover/bing3.png", mapel: "Bahasa Inggris" },
-            { title: "Bahasa Inggris 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Inggris_FN_BS_KLS_IV.pdf", cover : "cover/bing4.png", mapel: "Bahasa Inggris" },
-            { title: "Bahasa Inggris 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Inggris_FN_BS_KLS_V.pdf", cover : "cover/bing5.png", mapel: "Bahasa Inggris" },
-            { title: "Bahasa Inggris 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Inggris_FN_BS_KLS_VI.pdf", cover : "cover/bing6.png", mapel: "Bahasa Inggris" },
-            { title: "IPAS 3", jenjang: "SD", kelas : "3", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/IPAS_BS_KLS_III.pdf", cover : "cover/ipas3.png", mapel: "IPAS" },
-            { title: "IPAS 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/IPAS_BS_KLS_IV_Rev.pdf", cover : "cover/ipas4.png", mapel: "IPAS" },
-            { title: "IPAS 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/IPAS_BS_KLS_V_Rev.pdf", cover : "cover/ipas5.png", mapel: "IPAS" },
-            { title: "IPAS 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/IPAS_BS_KLS_VI_Rev.pdf", cover : "cover/ipas6.png", mapel: "IPAS" },
-            { title: "Matematika 1", jenjang: "SD", kelas : "1", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-I.pdf", cover : "cover/mtk1.png", mapel: "Matematika" },
-            { title: "Matematika 2", jenjang: "SD", kelas : "2", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-II.pdf", cover : "cover/mtk2.png", mapel: "Matematika" },
-            { title: "Matematika 3", jenjang: "SD", kelas : "3", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika_BS_KLS_III.pdf", cover : "cover/mtk3.png", mapel: "Matematika" },
-            { title: "Matematika 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-IV.pdf", cover : "cover/mtk4.png", mapel: "Matematika" },
-            { title: "Matematika 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-V.pdf", cover : "cover/mtk5.png", mapel: "Matematika" },
-            { title: "Matematika 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika_BS_KLS_VI.pdf", cover : "cover/mtk6.png", mapel: "Matematika" },
-            { title: "Pend. Agama Islam 1", jenjang: "SD", kelas : "1", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam-BS-KLS-I.pdf", cover : "cover/pai1.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Agama Islam 2", jenjang: "SD", kelas : "2", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam-BS-KLS-II.pdf", cover : "cover/pai2.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Agama Islam 3", jenjang: "SD", kelas : "3", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam_BS_KLS_III.pdf", cover : "cover/pai3.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Agama Islam 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam-BS-KLS-IV.pdf", cover : "cover/pai4.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Agama Islam 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam-BS-KLS-V.pdf", cover : "cover/pai5.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Agama Islam 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Islam_BS_KLS_VI.pdf", cover : "cover/pai6.png", mapel: "Pend. Agama Islam" },
-            { title: "Pend. Pancasila 1", jenjang: "SD", kelas : "1", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-I.pdf", cover : "cover/pkn1.png", mapel: "Pend. Pancasila" },
-            { title: "Pend. Pancasila 2", jenjang: "SD", kelas : "2", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-II.pdf", cover : "cover/pkn2.png", mapel: "Pend. Pancasila" },
-            { title: "Pend. Pancasila 3", jenjang: "SD", kelas : "3", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-III.pdf", cover : "cover/pkn3.png", mapel: "Pend. Pancasila" },
-            { title: "Pend. Pancasila 4", jenjang: "SD", kelas : "4", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-IV.pdf", cover : "cover/pkn4.png", mapel: "Pend. Pancasila" },
-            { title: "Pend. Pancasila 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-V.pdf", cover : "cover/pkn5.png", mapel: "Pend. Pancasila" },
-            { title: "Pend. Pancasila 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Pendidikan-Pancasila-BS-KLS-VI-Rev.pdf", cover : "cover/pkn6.png", mapel: "Pend. Pancasila" },
-            { title: "PJOK 1", jenjang: "SD", kelas : "1", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_R_BS_KLS_I_Rev.pdf", cover : "cover/pjok1.png", mapel: "PJOK" },
-            { title: "PJOK 2", jenjang: "SD", kelas : "2", url: "https://files.cloudapp.web.id/buku/BukuPendidikan/PJOK_BS_KLS_II.pdf", cover : "cover/pjok2.png", mapel: "PJOK" },
-            { title: "PJOK 3", jenjang: "SD", kelas : "3", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BG_KLS_III.pdf", cover : "cover/pjok3.png", mapel: "PJOK" },
-            { title: "PJOK 4", jenjang: "SD", kelas : "4", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BS_KLS_IV.pdf", cover : "cover/pjok4.png", mapel: "PJOK" },
-            { title: "PJOK 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BS_KLS_V.pdf", cover : "cover/pjok5.png", mapel: "PJOK" },
-            { title: "PJOK 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BS_KLS_VI.pdf", cover : "cover/pjok6.png", mapel: "PJOK" },
-            { title: "Koding & KA 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/KKA_BS_KLS_5.pdf", cover : "cover/koding5.png", mapel: "Koding & KA" }
-        ];
-
-        const KELAS_MAP = {
-            "SD": ["1", "2", "3", "4", "5", "6"],
-            "SMP": ["7", "8", "9"],
-            "SMA": ["10", "11", "12"]
-        };
-
         let filteredBooks = [...BOOK_DATABASE];
         let currentLibrarySlide = 0;
         let totalLibrarySlides = 1;
@@ -380,6 +333,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initFilters();
+            restoreFilters(); // Restore pilihan filter tersimpan
             applyFiltersAndRender();
             setupLibraryNavigation();
             
@@ -400,6 +354,12 @@
 
             jenjangSelect.addEventListener('change', function() {
                 const selectedJenjang = this.value;
+                sessionStorage.setItem('filter_jenjang', selectedJenjang);
+                
+                // Reset child filters jika jenjang berubah
+                sessionStorage.removeItem('filter_kelas');
+                sessionStorage.removeItem('filter_mapel');
+
                 kelasSelect.innerHTML = '<option value="">Semua Kelas</option>';
                 
                 if (selectedJenjang && KELAS_MAP[selectedJenjang]) {
@@ -415,13 +375,23 @@
             });
 
             kelasSelect.addEventListener('change', function() {
+                sessionStorage.setItem('filter_kelas', this.value);
+                sessionStorage.removeItem('filter_mapel');
                 updateMapelDropdown();
                 applyFiltersAndRender();
             });
 
-            mapelSelect.addEventListener('change', applyFiltersAndRender);
+            mapelSelect.addEventListener('change', function() {
+                sessionStorage.setItem('filter_mapel', this.value);
+                applyFiltersAndRender();
+            });
 
             btnReset.addEventListener('click', () => {
+                // Hapus data filter tersimpan dari sessionStorage
+                sessionStorage.removeItem('filter_jenjang');
+                sessionStorage.removeItem('filter_kelas');
+                sessionStorage.removeItem('filter_mapel');
+
                 jenjangSelect.value = "";
                 kelasSelect.value = "";
                 kelasSelect.disabled = true;
@@ -431,6 +401,39 @@
                 mapelSelect.innerHTML = '<option value="">Semua Mapel</option>';
                 applyFiltersAndRender();
             });
+        }
+
+        // Memulihkan filter dari sessionStorage
+        function restoreFilters() {
+            const savedJenjang = sessionStorage.getItem('filter_jenjang');
+            const savedKelas = sessionStorage.getItem('filter_kelas');
+            const savedMapel = sessionStorage.getItem('filter_mapel');
+
+            const jenjangSelect = document.getElementById('filter-jenjang');
+            const kelasSelect = document.getElementById('filter-kelas');
+            const mapelSelect = document.getElementById('filter-mapel');
+
+            if (savedJenjang) {
+                jenjangSelect.value = savedJenjang;
+                
+                if (KELAS_MAP[savedJenjang]) {
+                    kelasSelect.disabled = false;
+                    kelasSelect.innerHTML = '<option value="">Semua Kelas</option>';
+                    KELAS_MAP[savedJenjang].forEach(k => {
+                        kelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                    });
+
+                    if (savedKelas) {
+                        kelasSelect.value = savedKelas;
+                    }
+                }
+
+                updateMapelDropdown();
+
+                if (savedMapel) {
+                    mapelSelect.value = savedMapel;
+                }
+            }
         }
 
         function updateMapelDropdown() {
@@ -606,16 +609,7 @@
                 clearTimeout(timer);
                 timer = setTimeout(() => func.apply(this, args), delay);
             };
-        }
-        // GLOBAL BULLETPROOF SECURITY LAYER
-        (function() {
-            window.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); }, true);
-            window.addEventListener('keydown', function(e) {
-                if (e.key === 'F12') { e.preventDefault(); e.stopPropagation(); }
-                if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); e.stopPropagation(); }
-                if (e.ctrlKey && ['U', 'S', 'A', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); e.stopPropagation(); }
-            }, true);
-        })();
+        }        
     </script>
 </body>
 </html>
