@@ -62,7 +62,7 @@
             { title: "Matematika 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika-BS-KLS-V.pdf", cover : "cover/mtk5.png", mapel: "Matematika" },
             { title: "Matematika 6", jenjang: "SD", kelas : "6", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/Matematika_BS_KLS_VI.pdf", cover : "cover/mtk6.png", mapel: "Matematika" },
             { title: "PJOK 1", jenjang: "SD", kelas : "1", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_R_BS_KLS_I_Rev.pdf", cover : "cover/pjok1.png", mapel: "PJOK" },
-            { title: "PJOK 2", jenjang: "SD", kelas : "2", url: "https://files.cloudapp.web.id/buku/BukuPendidikan/PJOK_BS_KLS_II.pdf", cover : "cover/pjok2.png", mapel: "PJOK" },
+            { title: "PJOK 2", jenjang: "SD", kelas : "2", url: "pdf/PJOK_BS_KLS_II.pdf", cover : "cover/pjok2.png", mapel: "PJOK" },
             { title: "PJOK 3", jenjang: "SD", kelas : "3", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BG_KLS_III.pdf", cover : "cover/pjok3.png", mapel: "PJOK" },
             { title: "PJOK 4", jenjang: "SD", kelas : "4", url: "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BS_KLS_IV.pdf", cover : "cover/pjok4.png", mapel: "PJOK" },
             { title: "PJOK 5", jenjang: "SD", kelas : "5", url: "https://static-sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BS_KLS_V.pdf", cover : "cover/pjok5.png", mapel: "PJOK" },
