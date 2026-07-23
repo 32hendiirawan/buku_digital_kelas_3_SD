@@ -273,8 +273,8 @@
             padding: 8px 14px;
             text-align: center;
             color: #cbd5e1;
-            font-size: 1rem;
-            line-height: 1;
+            font-size: 0.78rem;
+            line-height: 1.35;
             box-shadow: 0 4px 16px rgba(0,0,0,0.4);
             z-index: 50;
         }
@@ -394,8 +394,19 @@
         Ebook ini dibuat tanpa menyematkan iklan apapun demi kenyamanan Anda. Jika ebook ini bermanfaat dan Anda merasa terbantu, untuk menjaga kelangsungan web ini, Anda dapat memberikan dukungan melalui 
         <a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092026072316249201" target="_blank" class="dana-link">Dana</a>, terima kasih.
     </div>
+    <script>
+        const BOOK_DATABASE = [];
+        const KELAS_MAP = {
+            "SD": ["1", "2", "3", "4", "5", "6"],
+            "SMP": ["7", "8", "9"],
+            "SMA": ["10", "11", "12"]
+        };
+    </script>
 
-    <script src="list_buku.js"></script>
+    <script src="buku_sd.js"></script>
+    <script src="buku_smp.js"></script>
+    <script src="buku_sma.js"></script>
+
     <script>
         let filteredBooks = [...BOOK_DATABASE];
         let currentLibrarySlide = 0;
