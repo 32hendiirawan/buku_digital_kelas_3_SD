@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="yIwBDN3WBzbXholgEzigzb6lxlRxJQ4XdiHAQx4j-XI" />
     <title>Perpustakaan Digital Terpadu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -393,8 +394,19 @@
         Ebook ini dibuat tanpa menyematkan iklan apapun demi kenyamanan Anda. Jika ebook ini bermanfaat dan Anda merasa terbantu, untuk menjaga kelangsungan web ini, Anda dapat memberikan dukungan melalui 
         <a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092026072316249201" target="_blank" class="dana-link">Dana</a>, terima kasih.
     </div>
+    <script>
+        const BOOK_DATABASE = [];
+        const KELAS_MAP = {
+            "SD": ["1", "2", "3", "4", "5", "6"],
+            "SMP": ["7", "8", "9"],
+            "SMA": ["10", "11", "12"]
+        };
+    </script>
 
-    <script src="list_buku.js"></script>
+    <script src="buku_sd.js"></script>
+    <script src="buku_smp.js"></script>
+    <script src="buku_sma.js"></script>
+
     <script>
         let filteredBooks = [...BOOK_DATABASE];
         let currentLibrarySlide = 0;
