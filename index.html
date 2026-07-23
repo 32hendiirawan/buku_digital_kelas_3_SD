@@ -18,35 +18,41 @@
             --accent-color: #3b82f6;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Mencegah scrollbar muncul */
+        }
+
         body {
             background-image: url('cover/bg.jpg');
             background-size: cover;
             background-position: center;
             color: #f8fafc;
             font-family: 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding-top: 2vh;
-            padding-bottom: 20px;
-            overflow-x: hidden;
+            justify-content: space-between; /* Menyebarkan elemen secara presisi vertikal */
+            padding: 10px 10px 15px 10px;
             perspective: 1200px; 
         }
 
         .button-chat {
             position: absolute;
-            bottom: 12vh;
-            right: 2vh;
+            bottom: 12px;
+            right: 12px;
             z-index: 100;
         }
 
+        .button-chat img {
+            height: 38px;
+        }
+
         .library-title {
-            font-size: 2rem;
-            margin-bottom: 15px;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             text-shadow: 0 4px 6px rgba(0,0,0,0.6);
             z-index: 50;
             text-align: center;
@@ -58,42 +64,42 @@
         .filter-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 6px;
             justify-content: center;
             align-items: center;
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 12px 20px;
-            border-radius: 16px;
+            padding: 6px 12px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
             z-index: 50;
-            width: 90vw;
-            max-width: 900px;
+            width: 80vw;
+            max-width: 850px;
         }
 
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             background: rgba(255, 255, 255, 0.08);
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .filter-group i {
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .filter-select {
             background: transparent;
             border: none;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 1rem;
             outline: none;
             cursor: pointer;
         }
@@ -107,23 +113,26 @@
             background: #ef4444;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: background 0.3s ease;
         }
         .btn-reset:hover { background: #dc2626; }
 
         /* ==================================================== */
-        /* DEFAULT LAYOUT: LANDSCAPE (3 Kolom x 2 Baris)        */
+        /* DEFAULT LAYOUT: LANDSCAPE (4 Kolom x 1 Baris)        */
         /* ==================================================== */
         .room-viewport {
             position: relative;
             width: 90vw;
-            max-width: 900px;
-            height: 480px;
+            max-width: 850px;
+            height: 240px; /* Diperketat untuk 1 baris di landscape */
             transform-style: preserve-3d; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .shelf-track {
@@ -140,10 +149,10 @@
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px 20px;
-            padding: 10px;
+            grid-template-columns: repeat(4, 1fr); /* 4 Kolom */
+            grid-template-rows: repeat(1, 1fr);    /* 1 Baris */
+            gap: 10px;
+            padding: 5px;
             box-sizing: border-box;
             border-radius: 8px;
             transform-style: preserve-3d;
@@ -156,18 +165,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             text-decoration: none;
             color: inherit;
             perspective: 1000px;
         }
 
         .book-cover-wrapper {
-            width: 130px;
-            height: 185px;
+            width: 110px;
+            height: 155px;
             background-color: #34495e;
-            border-radius: 4px 8px 8px 4px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+            border-radius: 4px 6px 6px 4px;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             transform-style: preserve-3d;
             position: relative;
@@ -185,23 +194,23 @@
         }
 
         .book-link:hover .book-cover-wrapper {
-            transform: rotateY(-20deg) translateZ(15px);
-            box-shadow: 15px 15px 25px rgba(0,0,0,0.8);
+            transform: rotateY(-20deg) translateZ(10px);
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.8);
         }
 
         .book-cover-wrapper::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 10px; height: 100%;
+            top: 0; left: 0; width: 8px; height: 100%;
             background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0) 100%);
             z-index: 10;
         }
 
         .book-title {
-            margin-top: 8px;
-            font-size: 0.9rem;
+            margin-top: 5px;
+            font-size: 0.8rem;
             text-align: center;
-            max-width: 140px;
+            max-width: 110px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -212,33 +221,33 @@
 
         .empty-state {
             position: absolute;
-            top: 40%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             color: #cbd5e1;
-            font-size: 1.1rem;
-            background: rgba(15, 23, 42, 0.8);
-            padding: 20px 30px;
+            font-size: 0.95rem;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 15px 20px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1);
         }
 
         .slider-btn {
             position: absolute;
-            top: 55%;
+            top: 50%;
             transform: translateY(-50%);
             background-color: rgba(15, 23, 42, 0.85);
             border: 1px solid #475569;
             color: #f8fafc;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
             z-index: 100;
         }
@@ -247,39 +256,93 @@
             transform: translateY(-50%) scale(1.1);
         }
         .slider-btn:disabled { opacity: 0.15; cursor: default; }
-        #slide-left { left: 15px; }
-        #slide-right { right: 15px; }
+        #slide-left { left: 10px; }
+        #slide-right { right: 10px; }
 
+        /* ==================================================== */
+        /* COMPONENT: SUPPORT / DONATION MESSAGE BANNER          */
+        /* ==================================================== */
+        .support-banner {
+            width: 90vw;
+            max-width: 850px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 8px 14px;
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            z-index: 50;
+        }
+
+        .dana-link {
+            color: #38bdf8;
+            font-weight: 600;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .dana-link:hover {
+            color: #60a5fa;
+        }
+
+        /* ==================================================== */
+        /* PORTRAIT / MOBILE LAYOUT (2 Kolom x 2 Baris)          */
+        /* ==================================================== */
         @media (max-width: 768px) or (orientation: portrait) {
-            .library-title { font-size: 1.5rem; }
-            .filter-container { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
-            .filter-group { justify-content: space-between; }
+            .library-title { font-size: 1.25rem; margin-bottom: 2px; }
             
+            .filter-container { 
+                flex-direction: row; 
+                gap: 5px; 
+                padding: 6px 8px; 
+            }
+
+            .filter-group {
+                padding: 3px 6px;
+                flex: 1 1 auto;
+            }
+
+            .filter-select { font-size: 0.75rem; }
+
             .room-viewport {
-                width: 85vw;
-                max-width: 450px;
-                height: 58vh;
+                width: 92vw;
+                max-width: 380px;
+                height: 380px; /* Rapat untuk 2x2 tanpa overflow */
             }
 
-            .shelf-track, .shelf-page { transform-origin: center center -250px; }
+            .shelf-track, .shelf-page { transform-origin: center center -200px; }
+            
             .shelf-page {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 15px 10px;
+                grid-template-columns: repeat(2, 1fr); /* 2 Kolom */
+                grid-template-rows: repeat(2, 1fr);    /* 2 Baris */
+                gap: 10px 8px;
             }
 
-            .book-cover-wrapper { width: 105px; height: 150px; }
-            .book-title { max-width: 105px; font-size: 0.8rem; }
-            .slider-btn { width: 40px; height: 40px; font-size: 1rem; }
-            #slide-left { left: 5px; }
-            #slide-right { right: 5px; }
+            .book-cover-wrapper { width: 95px; height: 135px; }
+            .book-title { max-width: 95px; font-size: 0.75rem; }
+            
+            .slider-btn { width: 34px; height: 34px; font-size: 0.9rem; }
+            #slide-left { left: 2px; }
+            #slide-right { right: 2px; }
+
+            .support-banner {
+                width: 92vw;
+                max-width: 380px;
+                font-size: 0.72rem;
+                padding: 6px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="button-chat">
         <a href="https://wa.me/6282289015759" target="_blank">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" height="45px" alt="WA">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
         </a>
     </div>
 
@@ -320,9 +383,16 @@
     <div class="room-viewport">
         <div class="shelf-track" id="shelf-track"></div>
         <div id="empty-state" class="empty-state" style="display: none;">
-            <i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:8px;"></i><br>
+            <i class="fa-solid fa-folder-open" style="font-size:1.5rem; margin-bottom:4px;"></i><br>
             Saat ini baru tersedia untuk Jenjang SD, untuk jenjang lainnya, silakan chat lewat button di kanan-bawah.
         </div>
+    </div>
+
+    <!-- BANNER PESAN DUKUNGAN / DONASI -->
+    <div class="support-banner">
+        <i class="fa-solid fa-heart" style="color: #ef4444; margin-right: 3px;"></i>
+        Ebook ini dibuat tanpa menyematkan iklan apapun demi kenyamanan Anda. Jika ebook ini bermanfaat dan Anda merasa terbantu, untuk menjaga kelangsungan web ini, Anda dapat memberikan dukungan melalui 
+        <a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092026072316249201" target="_blank" class="dana-link">Dana</a>, terima kasih.
     </div>
 
     <script src="list_buku.js"></script>
@@ -334,7 +404,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initFilters();
-            restoreFilters(); // Restore pilihan filter tersimpan
+            restoreFilters(); 
             applyFiltersAndRender();
             setupLibraryNavigation();
             
@@ -357,7 +427,6 @@
                 const selectedJenjang = this.value;
                 sessionStorage.setItem('filter_jenjang', selectedJenjang);
                 
-                // Reset child filters jika jenjang berubah
                 sessionStorage.removeItem('filter_kelas');
                 sessionStorage.removeItem('filter_mapel');
 
@@ -388,7 +457,6 @@
             });
 
             btnReset.addEventListener('click', () => {
-                // Hapus data filter tersimpan dari sessionStorage
                 sessionStorage.removeItem('filter_jenjang');
                 sessionStorage.removeItem('filter_kelas');
                 sessionStorage.removeItem('filter_mapel');
@@ -404,7 +472,6 @@
             });
         }
 
-        // Memulihkan filter dari sessionStorage
         function restoreFilters() {
             const savedJenjang = sessionStorage.getItem('filter_jenjang');
             const savedKelas = sessionStorage.getItem('filter_kelas');
@@ -488,9 +555,9 @@
                 emptyState.style.display = 'none';
             }
 
-            const itemsPerPage = 6;
-            totalLibrarySlides = Math.ceil(filteredBooks.length / itemsPerPage);
+            const itemsPerPage = 4;
 
+            totalLibrarySlides = Math.ceil(filteredBooks.length / itemsPerPage);
             anglePerSlide = totalLibrarySlides > 1 ? 360 / totalLibrarySlides : 0;
 
             const viewportWidth = document.querySelector('.room-viewport').offsetWidth || 800;
@@ -539,7 +606,7 @@
                     imgEl.alt = book.title;
                     imgEl.onerror = function() {
                         this.style.display = 'none';
-                        coverWrapper.innerHTML = '<i class="fa-solid fa-book" style="font-size:2rem;color:#64748b;"></i>';
+                        coverWrapper.innerHTML = '<i class="fa-solid fa-book" style="font-size:1.8rem;color:#64748b;"></i>';
                     };
 
                     const titleEl = document.createElement('div');
@@ -611,6 +678,7 @@
                 timer = setTimeout(() => func.apply(this, args), delay);
             };
         }
+
         // GLOBAL BULLETPROOF SECURITY LAYER
         (function() {
             window.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); }, true);
