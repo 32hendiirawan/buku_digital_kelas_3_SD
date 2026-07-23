@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Digital Terpadu</title>
+    <title>Dynamic PDF Responsive Flipbook</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         *, *::before, *::after {
@@ -49,7 +49,7 @@
             background-size: cover;
             background-position: center;
         }
-        .screen-container-wrapper.zoom-mode { display: block; overflow: hidden; cursor: grab; }
+        .screen-container-wrapper.zoom-mode { display: block; overflow: auto; cursor: grab; }
 
         .zoom-shield {
             position: absolute;
@@ -148,6 +148,37 @@
 
         canvas { width: 100% !important; height: 100% !important; object-fit: fill; display: block; }
 
+        /* PERBAIKAN STYLING TEXT LAYER & HIGHLIGHT */
+        .textLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 1;
+            line-height: 1.0;
+            pointer-events: none;
+            z-index: 6;
+            transform-origin: top left;
+        }
+
+        .textLayer span {
+            color: transparent;
+            position: absolute;
+            white-space: pre;
+            cursor: text;
+            transform-origin: 0% 0%;
+        }
+
+        /* STABILO HIGHLIGHT TEKS */
+        .textLayer mark.highlight {
+            background-color: rgba(255, 224, 0, 0.65);
+            color: transparent;
+            border-radius: 2px;
+            padding: 1px 0;
+        }
+
         .page-skeleton {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
@@ -170,7 +201,6 @@
 
         .page-input-wrapper { display: flex; align-items: center; gap: 6px; color: #94a3b8; font-size: 0.9rem; margin: 0 5px; }
         .page-input-wrapper input { width: 45px; height: 28px; background-color: #1e293b; border: 1px solid #334155; color: #f8fafc; border-radius: 6px; text-align: center; font-weight: bold; }
-        .control-divider { width: 1px; height: 18px; background-color: #334155; margin: 0 2px; }
 
         .loading-state {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -205,6 +235,7 @@
             .page.halaman-isi:nth-child(odd), .page.halaman-isi:nth-child(even) { padding: 0; border:none; }
             .page.halaman-isi:nth-child(odd) .page-isi-konten::after, .page.halaman-isi:nth-child(even) .page-isi-konten::after { display: none; }
         }
+        
         .fly-group {
             position: absolute; 
             top: 10px; 
@@ -212,13 +243,43 @@
             z-index: 100;
             display: flex;
             flex-direction: row;
+            align-items: center;
             gap: 8px;
         }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2px 6px 2px 10px;
+            gap: 2px;
+            transition: all 0.3s ease;
+        }
+        .search-container input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 0.85rem;
+            width: 100px;
+            padding: 4px 2px;
+        }
+        .search-container input::placeholder { color: #94a3b8; }
+        .search-info {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin: 0 4px;
+            white-space: nowrap;
+        }
+
         .fly-btn {
             background: navy; 
             border: none; 
             color: #94a3b8; 
-            font-size: 1.2rem; 
+            font-size: 1rem; 
             width: 36px; 
             height: 36px; 
             border-radius: 50%; 
@@ -227,11 +288,41 @@
             justify-content: center; 
             align-items: center; 
             transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .fly-btn:hover { color: #ffffff; background: #1e3a8a; }
+
+        .search-nav-btn {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s;
+        }
+        .search-nav-btn:hover { color: #ffffff; background: rgba(255,255,255,0.1); }
+
+        @media (max-width: 600px) {
+            .search-container input { width: 65px; }
+            .fly-btn { width: 32px; height: 32px; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
     <div class="fly-group">
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 0.8rem;"></i>
+            <input type="text" id="input-search" placeholder="Cari teks...">
+            <span id="search-status" class="search-info"></span>
+            <button class="search-nav-btn" id="btn-search-prev" title="Sebelumnya"><i class="fa-solid fa-chevron-up" style="font-size: 0.7rem;"></i></button>
+            <button class="search-nav-btn" id="btn-search-next" title="Berikutnya"><i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i></button>
+        </div>
+
         <button class="fly-btn" id="btn-library" title="Rak Buku"><i class="fa-solid fa-home"></i></button>
         <button class="fly-btn" id="btn-fullscreen" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
         <button class="fly-btn" id="btn-zoom" title="Zoom"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
@@ -262,7 +353,6 @@
 
         <button class="control-btn" id="btn-next" title="Kanan"><i class="fa-solid fa-chevron-right"></i></button>
         <button class="control-btn" id="btn-end" title="Akhir"><i class="fa-solid fa-forward-step"></i></button>
-        
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -276,18 +366,13 @@
             let targetPdf = urlParams.get('file') || urlParams.get('pdf');
 
             if (targetPdf) {
-                // 1. Simpan ke sessionStorage jika masuk via query URL
                 sessionStorage.setItem('active_pdf_url', targetPdf);
-                
-                // 2. BERSIHKAN ADDRESS BAR: Hapus query parameter dari URL browser secara instan!
                 const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
             } else {
-                // Jika tidak ada di URL, ambil dari sessionStorage
                 targetPdf = sessionStorage.getItem('active_pdf_url');
             }
 
-            // Jika tetap tidak ditemukan, balikkan ke perpustakaan
             if (!targetPdf) { 
                 alert("Buku tidak ditemukan atau sesi telah berakhir.");
                 window.location.href = 'index.html'; 
@@ -310,11 +395,20 @@
             const inputPage = document.getElementById('input-page');
             const totalPagesText = document.getElementById('total-pages');
 
+            const inputSearch = document.getElementById('input-search');
+            const searchStatus = document.getElementById('search-status');
+            const btnSearchPrev = document.getElementById('btn-search-prev');
+            const btnSearchNext = document.getElementById('btn-search-next');
+
             let isZoomed = false;
             let pageFlip = null;
             let totalPages = 0;
             let pdfDoc = null;
-            const renderedPages = new Map(); 
+            const renderedPages = new Map();
+
+            let searchMatches = [];
+            let currentMatchIndex = -1;
+            let currentSearchQuery = "";
 
             btnLibrary.onclick = () => { if(!isZoomed) window.location.href = 'index.html'; };
 
@@ -428,8 +522,10 @@
                     const page = await pdfDoc.getPage(pageNum);
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
-                    const viewport = page.getViewport({ scale: 1.8 });
                     
+                    const scale = 1.8;
+                    const viewport = page.getViewport({ scale: scale });
+
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
 
@@ -444,14 +540,71 @@
                             targetWrapper.appendChild(canvas);
                         }
                         if (skeleton) skeleton.remove();
+
+                        if (currentSearchQuery) {
+                            await renderTextLayer(page, targetWrapper, viewport, currentSearchQuery);
+                        }
                     }
                     return true;
                 } catch (err) { return false; }
             }
 
+            async function renderTextLayer(page, container, viewport, query) {
+                let textLayerDiv = container.querySelector('.textLayer');
+                if (!textLayerDiv) {
+                    textLayerDiv = document.createElement('div');
+                    textLayerDiv.className = 'textLayer';
+                    container.appendChild(textLayerDiv);
+                }
+                textLayerDiv.innerHTML = '';
+
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width || container.offsetWidth;
+                const containerHeight = containerRect.height || container.offsetHeight;
+
+                const scaleX = containerWidth / viewport.width;
+                const scaleY = containerHeight / viewport.height;
+
+                const textContent = await page.getTextContent();
+                
+                textContent.items.forEach(item => {
+                    const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+                    const fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]);
+
+                    const span = document.createElement('span');
+                    
+                    const posX = tx[4] * scaleX;
+                    const posY = (tx[5] - fontHeight) * scaleY;
+
+                    span.style.left = `${posX}px`;
+                    span.style.top = `${posY}px`;
+                    span.style.fontSize = `${fontHeight * scaleY}px`;
+                    
+                    const text = item.str;
+                    const queryLower = query.toLowerCase();
+                    const textLower = text.toLowerCase();
+
+                    if (queryLower && textLower.includes(queryLower)) {
+                        const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+                        span.innerHTML = text.replace(regex, '<mark class="highlight">$1</mark>');
+                    } else {
+                        span.textContent = text;
+                    }
+
+                    textLayerDiv.appendChild(span);
+                });
+            }
+
+            function clearHighlights() {
+                document.querySelectorAll('.textLayer').forEach(el => el.remove());
+            }
+
+            function escapeRegExp(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
             function updateUIState(currentIndex) {
                 inputPage.value = currentIndex + 1;
-                if (isZoomed) return;
 
                 const isPortrait = window.innerWidth <= 768 || window.innerHeight > window.innerWidth;
                 
@@ -467,19 +620,130 @@
                     }
                 }
                 
+                // Izinkan tombol aktif di mode apa saja selama indeks halaman valid
                 btnHome.disabled = (currentIndex === 0);
                 btnPrev.disabled = (currentIndex === 0);
                 btnNext.disabled = (currentIndex === totalPages - 1);
                 btnEnd.disabled = (currentIndex === totalPages - 1);
             }
 
-            btnHome.onclick = () => { if(!isZoomed) pageFlip.turnToPage(0); };
-            btnEnd.onclick = () => { if(!isZoomed) pageFlip.turnToPage(totalPages - 1); };
-            btnNext.onclick = () => { if(!isZoomed) pageFlip.flipNext(); };
-            btnPrev.onclick = () => { if(!isZoomed) pageFlip.flipPrev(); };
+            async function performSearch(query) {
+                if (!pdfDoc || !query) {
+                    searchMatches = [];
+                    currentMatchIndex = -1;
+                    searchStatus.innerText = "";
+                    clearHighlights();
+                    return;
+                }
+
+                searchStatus.innerText = "...";
+                searchMatches = [];
+                currentMatchIndex = -1;
+                clearHighlights();
+
+                const queryLower = query.toLowerCase();
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const page = await pdfDoc.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ').toLowerCase();
+
+                    if (pageText.includes(queryLower)) {
+                        searchMatches.push(i);
+                    }
+                }
+
+                if (searchMatches.length > 0) {
+                    currentMatchIndex = 0;
+                    jumpToSearchResult();
+                } else {
+                    searchStatus.innerText = "0/0";
+                }
+            }
+
+            function jumpToSearchResult() {
+                if (currentMatchIndex >= 0 && currentMatchIndex < searchMatches.length) {
+                    const targetPageNum = searchMatches[currentMatchIndex];
+                    searchStatus.innerText = `${currentMatchIndex + 1}/${searchMatches.length}`;
+                    
+                    renderPageQueue(targetPageNum).then(async () => {
+                        pageFlip.turnToPage(targetPageNum - 1);
+                        updateUIState(targetPageNum - 1);
+
+                        const pageDiv = document.getElementById(`page-container-${targetPageNum}`);
+                        if (pageDiv) {
+                            const targetWrapper = pageDiv.querySelector('.page-isi-konten') || pageDiv.querySelector('.cover-container');
+                            const page = await pdfDoc.getPage(targetPageNum);
+                            const viewport = page.getViewport({ scale: 1.8 });
+                            
+                            setTimeout(() => {
+                                renderTextLayer(page, targetWrapper, viewport, currentSearchQuery);
+                            }, 100);
+                        }
+                    });
+                }
+            }
+
+            inputSearch.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (!query) {
+                        searchMatches = [];
+                        currentSearchQuery = "";
+                        searchStatus.innerText = "";
+                        clearHighlights();
+                        return;
+                    }
+
+                    if (query === currentSearchQuery && searchMatches.length > 0) {
+                        currentMatchIndex = (currentMatchIndex + 1) % searchMatches.length;
+                        jumpToSearchResult();
+                    } else {
+                        currentSearchQuery = query;
+                        performSearch(query);
+                    }
+                }
+            });
+
+            btnSearchNext.addEventListener('click', function() {
+                const query = inputSearch.value.trim();
+                if (query && searchMatches.length > 0) {
+                    currentMatchIndex = (currentMatchIndex + 1) % searchMatches.length;
+                    jumpToSearchResult();
+                } else if (query) {
+                    currentSearchQuery = query;
+                    performSearch(query);
+                }
+            });
+
+            btnSearchPrev.addEventListener('click', function() {
+                const query = inputSearch.value.trim();
+                if (query && searchMatches.length > 0) {
+                    currentMatchIndex = (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
+                    jumpToSearchResult();
+                } else if (query) {
+                    currentSearchQuery = query;
+                    performSearch(query);
+                }
+            });
+
+            // FUNGSI NAVIGASI YANG TETAP BISA DIPAKAI SAAT ZOOM
+            btnHome.onclick = () => { 
+                pageFlip.turnToPage(0); 
+                updateUIState(0);
+            };
+            btnEnd.onclick = () => { 
+                pageFlip.turnToPage(totalPages - 1); 
+                updateUIState(totalPages - 1);
+            };
+            btnNext.onclick = () => { 
+                pageFlip.flipNext(); 
+            };
+            btnPrev.onclick = () => { 
+                pageFlip.flipPrev(); 
+            };
 
             inputPage.onchange = function() {
-                if (isZoomed) return;
                 let val = parseInt(this.value);
                 if (!isNaN(val) && val >= 1 && val <= totalPages) {
                     let targetIndex = val - 1;
@@ -539,8 +803,7 @@
                     screenContainer.classList.add('zoomed');
                     zoomShield.classList.add('active');
                     this.innerHTML = '<i class="fa-solid fa-magnifying-glass-minus"></i>';
-                    btnHome.disabled = btnPrev.disabled = btnNext.disabled = btnEnd.disabled = true;
-                    inputPage.disabled = true;
+                    
                     setTimeout(() => {
                         zoomShield.style.width = (screenContainer.offsetWidth * 2) + 'px';
                         zoomShield.style.height = (screenContainer.offsetHeight * 2) + 'px';
@@ -550,10 +813,9 @@
                     zoomViewport.classList.remove('zoom-mode');
                     zoomShield.classList.remove('active');
                     this.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i>';
-                    inputPage.disabled = false;
                     zoomViewport.scrollLeft = zoomViewport.scrollTop = 0;
-                    updateUIState(pageFlip.getCurrentPageIndex());
                 }
+                updateUIState(pageFlip.getCurrentPageIndex());
             };
 
             btnFullscreen.onclick = () => {

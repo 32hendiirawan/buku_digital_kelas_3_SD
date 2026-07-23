@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpustakaan Digital Terpadu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-color: #0f172a;         
+            --accent-color: #3b82f6;
+        }
+
+        body {
+            background-image: url('cover/bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 2vh;
+            padding-bottom: 20px;
+            overflow-x: hidden;
+            perspective: 1200px; 
+        }
+
+        .button-chat {
+            position: absolute;
+            bottom: 12vh;
+            right: 2vh;
+            z-index: 100;
+        }
+
+        .library-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.6);
+            z-index: 50;
+            text-align: center;
+        }
+
+        /* ==================================================== */
+        /* COMPONENT: MODERN FILTER BAR                         */
+        /* ==================================================== */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            margin-bottom: 20px;
+            z-index: 50;
+            width: 90vw;
+            max-width: 900px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-group i {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select option {
+            background-color: #1e293b;
+            color: #fff;
+        }
+
+        .btn-reset {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s ease;
+        }
+        .btn-reset:hover { background: #dc2626; }
+
+        /* ==================================================== */
+        /* DEFAULT LAYOUT: LANDSCAPE (3 Kolom x 2 Baris)        */
+        /* ==================================================== */
+        .room-viewport {
+            position: relative;
+            width: 90vw;
+            max-width: 900px;
+            height: 480px;
+            transform-style: preserve-3d; 
+        }
+
+        .shelf-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-origin: center center -450px;
+        }
+
+        .shelf-page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px 20px;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform-origin: center center -450px;
+        }
+
+        .book-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            text-decoration: none;
+            color: inherit;
+            perspective: 1000px;
+        }
+
+        .book-cover-wrapper {
+            width: 130px;
+            height: 185px;
+            background-color: #34495e;
+            border-radius: 4px 8px 8px 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .book-link:hover .book-cover-wrapper {
+            transform: rotateY(-20deg) translateZ(15px);
+            box-shadow: 15px 15px 25px rgba(0,0,0,0.8);
+        }
+
+        .book-cover-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 10px; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0) 100%);
+            z-index: 10;
+        }
+
+        .book-title {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 140px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            background-color: rgba(15, 23, 42, 0.85);
+            border: 1px solid #475569;
+            color: #f8fafc;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .slider-btn:hover:not(:disabled) { 
+            background-color: var(--accent-color); 
+            transform: translateY(-50%) scale(1.1);
+        }
+        .slider-btn:disabled { opacity: 0.15; cursor: default; }
+        #slide-left { left: 15px; }
+        #slide-right { right: 15px; }
+
+        @media (max-width: 768px) or (orientation: portrait) {
+            .library-title { font-size: 1.5rem; }
+            .filter-container { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
+            .filter-group { justify-content: space-between; }
+            
+            .room-viewport {
+                width: 85vw;
+                max-width: 450px;
+                height: 58vh;
+            }
+
+            .shelf-track, .shelf-page { transform-origin: center center -250px; }
+            .shelf-page {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 15px 10px;
+            }
+
+            .book-cover-wrapper { width: 105px; height: 150px; }
+            .book-title { max-width: 105px; font-size: 0.8rem; }
+            .slider-btn { width: 40px; height: 40px; font-size: 1rem; }
+            #slide-left { left: 5px; }
+            #slide-right { right: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="button-chat">
+        <a href="https://wa.me/6282289015759" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" height="45px" alt="WA">
+        </a>
+    </div>
+
+    <h1 class="library-title"><i class="fa-solid fa-book-bookmark"></i> Perpustakaan Digital</h1>
+
+    <!-- MODERN FILTER BAR (JENJANG -> KELAS -> MAPEL) -->
+    <div class="filter-container">
+        <!-- Filter 1: Jenjang -->
+        <div class="filter-group">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <select id="filter-jenjang" class="filter-select">
+                <option value="">Semua Jenjang</option>
+            </select>
+        </div>
+
+        <!-- Filter 2: Kelas -->
+        <div class="filter-group">
+            <i class="fa-solid fa-layer-group"></i>
+            <select id="filter-kelas" class="filter-select" disabled>
+                <option value="">Pilih Jenjang Dulu</option>
+            </select>
+        </div>
+
+        <!-- Filter 3: Mata Pelajaran -->
+        <div class="filter-group">
+            <i class="fa-solid fa-book"></i>
+            <select id="filter-mapel" class="filter-select" disabled>
+                <option value="">Semua Mapel</option>
+            </select>
+        </div>
+
+        <button id="btn-reset" class="btn-reset" title="Reset Filter"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+
+    <button class="slider-btn" id="slide-left" disabled><i class="fa-solid fa-arrow-left"></i></button>
+    <button class="slider-btn" id="slide-right" disabled><i class="fa-solid fa-arrow-right"></i></button>
+
+    <div class="room-viewport">
+        <div class="shelf-track" id="shelf-track"></div>
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <i class="fa-solid fa-folder-open" style="font-size:2rem; margin-bottom:8px;"></i><br>
+            Saat ini baru tersedia untuk Jenjang SD, untuk jenjang lainnya, silakan chat lewat button di kanan-bawah.
+        </div>
+    </div>
+
+    <script src="list_buku.js"></script>
+    <script>
+        let filteredBooks = [...BOOK_DATABASE];
+        let currentLibrarySlide = 0;
+        let totalLibrarySlides = 1;
+        let anglePerSlide = 90; 
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initFilters();
+            restoreFilters(); // Restore pilihan filter tersimpan
+            applyFiltersAndRender();
+            setupLibraryNavigation();
+            
+            window.addEventListener('resize', debounce(() => {
+                initLibraryShelf();
+            }, 300));
+        });
+
+        function initFilters() {
+            const jenjangSelect = document.getElementById('filter-jenjang');
+            const kelasSelect = document.getElementById('filter-kelas');
+            const mapelSelect = document.getElementById('filter-mapel');
+            const btnReset = document.getElementById('btn-reset');
+
+            Object.keys(KELAS_MAP).forEach(j => {
+                jenjangSelect.innerHTML += `<option value="${j}">${j}</option>`;
+            });
+
+            jenjangSelect.addEventListener('change', function() {
+                const selectedJenjang = this.value;
+                sessionStorage.setItem('filter_jenjang', selectedJenjang);
+                
+                // Reset child filters jika jenjang berubah
+                sessionStorage.removeItem('filter_kelas');
+                sessionStorage.removeItem('filter_mapel');
+
+                kelasSelect.innerHTML = '<option value="">Semua Kelas</option>';
+                
+                if (selectedJenjang && KELAS_MAP[selectedJenjang]) {
+                    kelasSelect.disabled = false;
+                    KELAS_MAP[selectedJenjang].forEach(k => {
+                        kelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                    });
+                } else {
+                    kelasSelect.disabled = true;
+                }
+                updateMapelDropdown();
+                applyFiltersAndRender();
+            });
+
+            kelasSelect.addEventListener('change', function() {
+                sessionStorage.setItem('filter_kelas', this.value);
+                sessionStorage.removeItem('filter_mapel');
+                updateMapelDropdown();
+                applyFiltersAndRender();
+            });
+
+            mapelSelect.addEventListener('change', function() {
+                sessionStorage.setItem('filter_mapel', this.value);
+                applyFiltersAndRender();
+            });
+
+            btnReset.addEventListener('click', () => {
+                // Hapus data filter tersimpan dari sessionStorage
+                sessionStorage.removeItem('filter_jenjang');
+                sessionStorage.removeItem('filter_kelas');
+                sessionStorage.removeItem('filter_mapel');
+
+                jenjangSelect.value = "";
+                kelasSelect.value = "";
+                kelasSelect.disabled = true;
+                kelasSelect.innerHTML = '<option value="">Pilih Jenjang Dulu</option>';
+                mapelSelect.value = "";
+                mapelSelect.disabled = true;
+                mapelSelect.innerHTML = '<option value="">Semua Mapel</option>';
+                applyFiltersAndRender();
+            });
+        }
+
+        // Memulihkan filter dari sessionStorage
+        function restoreFilters() {
+            const savedJenjang = sessionStorage.getItem('filter_jenjang');
+            const savedKelas = sessionStorage.getItem('filter_kelas');
+            const savedMapel = sessionStorage.getItem('filter_mapel');
+
+            const jenjangSelect = document.getElementById('filter-jenjang');
+            const kelasSelect = document.getElementById('filter-kelas');
+            const mapelSelect = document.getElementById('filter-mapel');
+
+            if (savedJenjang) {
+                jenjangSelect.value = savedJenjang;
+                
+                if (KELAS_MAP[savedJenjang]) {
+                    kelasSelect.disabled = false;
+                    kelasSelect.innerHTML = '<option value="">Semua Kelas</option>';
+                    KELAS_MAP[savedJenjang].forEach(k => {
+                        kelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+                    });
+
+                    if (savedKelas) {
+                        kelasSelect.value = savedKelas;
+                    }
+                }
+
+                updateMapelDropdown();
+
+                if (savedMapel) {
+                    mapelSelect.value = savedMapel;
+                }
+            }
+        }
+
+        function updateMapelDropdown() {
+            const jenjang = document.getElementById('filter-jenjang').value;
+            const kelas = document.getElementById('filter-kelas').value;
+            const mapelSelect = document.getElementById('filter-mapel');
+
+            let pool = BOOK_DATABASE;
+            if (jenjang) pool = pool.filter(b => b.jenjang === jenjang);
+            if (kelas) pool = pool.filter(b => b.kelas === kelas);
+
+            const mapelList = [...new Set(pool.map(b => b.mapel))];
+
+            mapelSelect.innerHTML = '<option value="">Semua Mapel</option>';
+            if (mapelList.length > 0) {
+                mapelSelect.disabled = false;
+                mapelList.forEach(m => {
+                    mapelSelect.innerHTML += `<option value="${m}">${m}</option>`;
+                });
+            } else {
+                mapelSelect.disabled = true;
+            }
+        }
+
+        function applyFiltersAndRender() {
+            const jenjang = document.getElementById('filter-jenjang').value;
+            const kelas = document.getElementById('filter-kelas').value;
+            const mapel = document.getElementById('filter-mapel').value;
+
+            filteredBooks = BOOK_DATABASE.filter(book => {
+                const matchJenjang = !jenjang || book.jenjang === jenjang;
+                const matchKelas = !kelas || book.kelas === kelas;
+                const matchMapel = !mapel || book.mapel === mapel;
+                return matchJenjang && matchKelas && matchMapel;
+            });
+
+            currentLibrarySlide = 0;
+            initLibraryShelf();
+        }
+
+        function initLibraryShelf() {
+            const track = document.getElementById('shelf-track');
+            const emptyState = document.getElementById('empty-state');
+            track.innerHTML = "";
+
+            if (filteredBooks.length === 0) {
+                emptyState.style.display = 'block';
+                updateSliderButtons(true);
+                return;
+            } else {
+                emptyState.style.display = 'none';
+            }
+
+            const itemsPerPage = 6;
+            totalLibrarySlides = Math.ceil(filteredBooks.length / itemsPerPage);
+
+            anglePerSlide = totalLibrarySlides > 1 ? 360 / totalLibrarySlides : 0;
+
+            const viewportWidth = document.querySelector('.room-viewport').offsetWidth || 800;
+            const tz = totalLibrarySlides > 1 ? Math.round((viewportWidth / 2) / Math.tan(Math.PI / totalLibrarySlides)) : 0;
+
+            track.style.transformOrigin = `center center -${tz}px`;
+
+            if (currentLibrarySlide >= totalLibrarySlides) currentLibrarySlide = totalLibrarySlides - 1;
+            if (currentLibrarySlide < 0) currentLibrarySlide = 0;
+
+            for (let s = 0; s < totalLibrarySlides; s++) {
+                const shelfPage = document.createElement('div');
+                shelfPage.className = 'shelf-page';
+                shelfPage.style.transformOrigin = `center center -${tz}px`;
+                shelfPage.style.transform = `rotateY(${s * anglePerSlide}deg)`;
+                shelfPage.style.transition = "opacity 0.5s ease";
+
+                if (s === currentLibrarySlide) {
+                    shelfPage.style.opacity = '1';
+                    shelfPage.style.pointerEvents = 'auto';
+                } else {
+                    shelfPage.style.opacity = '0';
+                    shelfPage.style.pointerEvents = 'none';
+                }
+
+                const startIdx = s * itemsPerPage;
+                const endIdx = Math.min(startIdx + itemsPerPage, filteredBooks.length);
+
+                for (let i = startIdx; i < endIdx; i++) {
+                    const book = filteredBooks[i];
+                    
+                    const bookLink = document.createElement('a');
+                    bookLink.className = 'book-link';
+                    bookLink.href = 'buku.html';
+
+                    bookLink.addEventListener('click', function(e) {
+                        sessionStorage.setItem('active_pdf_url', book.url);
+                    });
+
+                    const coverWrapper = document.createElement('div');
+                    coverWrapper.className = 'book-cover-wrapper';
+
+                    const imgEl = document.createElement('img');
+                    imgEl.className = 'book-cover-img';
+                    imgEl.src = book.cover;
+                    imgEl.alt = book.title;
+                    imgEl.onerror = function() {
+                        this.style.display = 'none';
+                        coverWrapper.innerHTML = '<i class="fa-solid fa-book" style="font-size:2rem;color:#64748b;"></i>';
+                    };
+
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'book-title';
+                    titleEl.innerText = book.title;
+
+                    coverWrapper.appendChild(imgEl);
+                    bookLink.appendChild(coverWrapper);
+                    bookLink.appendChild(titleEl);
+                    shelfPage.appendChild(bookLink);
+                }
+                track.appendChild(shelfPage);
+            }
+            track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+            updateSliderButtons();
+        }
+
+        function updateSlideVisibility() {
+            const pages = document.querySelectorAll('.shelf-page');
+            pages.forEach((page, index) => {
+                if (index === currentLibrarySlide) {
+                    page.style.opacity = '1';
+                    page.style.pointerEvents = 'auto';
+                } else {
+                    page.style.opacity = '0';
+                    page.style.pointerEvents = 'none';
+                }
+            });
+        }
+
+        function setupLibraryNavigation() {
+            const track = document.getElementById('shelf-track');
+            const btnLeft = document.getElementById('slide-left');
+            const btnRight = document.getElementById('slide-right');
+
+            btnRight.onclick = () => {
+                if (currentLibrarySlide < totalLibrarySlides - 1) {
+                    currentLibrarySlide++;
+                    track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+                    updateSlideVisibility();
+                    updateSliderButtons();
+                }
+            };
+
+            btnLeft.onclick = () => {
+                if (currentLibrarySlide > 0) {
+                    currentLibrarySlide--;
+                    track.style.transform = `rotateY(${-currentLibrarySlide * anglePerSlide}deg)`;
+                    updateSlideVisibility();
+                    updateSliderButtons();
+                }
+            };
+        }
+
+        function updateSliderButtons(forceDisable = false) {
+            if(forceDisable) {
+                document.getElementById('slide-left').disabled = true;
+                document.getElementById('slide-right').disabled = true;
+                return;
+            }
+            document.getElementById('slide-left').disabled = (currentLibrarySlide === 0);
+            document.getElementById('slide-right').disabled = (currentLibrarySlide >= totalLibrarySlides - 1);
+        }
+
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }        
+    </script>
+</body>
+</html>
